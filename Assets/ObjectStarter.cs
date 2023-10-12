@@ -43,14 +43,17 @@ public class ObjectStarter : MonoBehaviour
         if (team == "rock")
         {
             spriteRenderer.sprite = rpsIcons[0];
+            targetTeam = "scissors";
         }
         else if (team == "paper")
         {
             spriteRenderer.sprite = rpsIcons[1];
+            targetTeam = "rock";
         }
         else if (team == "scissors")
         {
             spriteRenderer.sprite = rpsIcons[2];
+            targetTeam = "paper";
         }
         ObjectStarter[] objectStarters = FindObjectsOfType<ObjectStarter>();
         float closestDistance = float.MaxValue;
@@ -82,7 +85,33 @@ public class ObjectStarter : MonoBehaviour
         if (currentTarget != null)
         {
             direction = currentTarget.transform.position - transform.position;
+            rb.velocity = Vector2.zero;
+            // rb.angularVelocity = Vector2.zero;
             rb.AddForce(direction.normalized * thrust/100, ForceMode2D.Impulse);
+        }
+        else
+        {
+            ObjectStarter[] objectStarters = FindObjectsOfType<ObjectStarter>();
+            float closestDistance = float.MaxValue;
+            ObjectStarter closestObject = null;
+
+            foreach (ObjectStarter otherObject in objectStarters)
+            {
+                if (otherObject != this && otherObject.team != targetTeam)
+                {
+                    float distance = Vector3.Distance(transform.position, otherObject.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestObject = otherObject;
+                    }
+                }
+            }
+            currentTarget = closestObject.gameObject;
+            direction = currentTarget.transform.position + transform.position;
+            rb.velocity = Vector2.zero;
+            // rb.angularVelocity = Vector2.zero;
+            rb.AddForce(direction.normalized * thrust / 100, ForceMode2D.Impulse);
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
