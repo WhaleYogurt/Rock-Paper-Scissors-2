@@ -36,7 +36,7 @@ public class ObjectStarter : MonoBehaviour
         {
             targetTeam = "paper";
         }
-        InvokeRepeating("Attack", 2.0f, 5.0f);
+        InvokeRepeating("Attack", 0.1f, 0.5f);
     }
     void Update()
     {
@@ -82,7 +82,7 @@ public class ObjectStarter : MonoBehaviour
         if (currentTarget != null)
         {
             direction = currentTarget.transform.position - transform.position;
-            // rb.AddForce(direction.normalized * thrust, ForceMode2D.VelocityChange);
+            rb.AddForce(direction.normalized * thrust/100, ForceMode2D.Impulse);
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
